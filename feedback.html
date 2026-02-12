@@ -43,7 +43,7 @@
             <option value="5">5 - Very helpful</option>
           </select>
         </div>
-        <p class="small-text">Feedback is sent to the backend server. Make sure the server is running on port 3001 (see RUN_GUIDE.md).</p>
+        <p class="small-text">Feedback is sent to the backend server.</p>
         <button type="submit" id="feedback-submit-btn" class="primary-button">Submit feedback</button>
       </form>
 
@@ -57,6 +57,7 @@
   </footer>
 
   <script src="script.js"></script>
+  <script src="config.js"></script>
   <script src="api.js"></script>
   <script>
     (function () {
@@ -75,15 +76,15 @@
       form.addEventListener('submit', function (e) {
         e.preventDefault();
         var text = textArea.value.trim();
-        if (!text) {
+        if (!text) { // prevent empty submission
           showMessage('Please enter some feedback.', true);
           return;
         }
 
-        submitBtn.disabled = true;
+        submitBtn.disabled = true; // prevent double submission
         messageEl.hidden = true;
 
-        fetch('http://localhost:3001/api/feedback', {
+        fetch(API_BASE_URL + '/api/feedback', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text: text, rating: ratingSelect.value || '' })
@@ -100,7 +101,7 @@
             }
           })
           .catch(function () {
-            showMessage('Backend is not running or unreachable. Start the server on port 3001 (see RUN_GUIDE.md).', true);
+            showMessage('Backend is not running or unreachable. Please try again later.', true);
           })
           .finally(function () {
             submitBtn.disabled = false;

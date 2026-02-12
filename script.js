@@ -9,9 +9,8 @@ function loadJsonFile(path) { // shared helper for lessons and quiz
       } // end status check
       return response.json(); // turn the body into a javascript object/array
     }) // end then
-    .catch(function (error) { // if something goes wrong
-      console.error(error); // log error to console so I can see it
-      return null; // return null so callers can handle missing data
+    .catch(function () { // if something goes wrong
+      return null; // callers handle missing data
     }); // end catch
 } // end loadJsonFile
 

@@ -110,10 +110,10 @@ document.addEventListener('DOMContentLoaded', function () { // wait for dom read
   // -------- state helpers --------
 
   function applyAnswerResult(quizState, qState, question, isCorrect) { // update score and tips safely
-    if (isCorrect && !qState.hasScored) { // first time getting this question right
-      quizState.score += 1; // increase total score
-      qState.hasScored = true; // mark that score was already counted
-    } // do not add score again on resubmit
+    if (isCorrect && !qState.hasScored) { // avoid double scoring
+      quizState.score += 1;
+      qState.hasScored = true;
+    }
 
     if (!isCorrect) { // for wrong answers we track tips
       if (!quizState.wrongTipsByTopic[question.topic]) { // if this topic has no tips stored yet

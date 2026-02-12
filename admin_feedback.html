@@ -36,12 +36,13 @@
     <p>CyberSafeLearn &mdash; Admin demo.</p>
   </footer>
 
+  <script src="config.js"></script>
   <script>
     (function () {
       var statusEl = document.getElementById('admin-status');
       var listEl = document.getElementById('admin-list');
 
-      fetch('http://localhost:3001/api/feedback')
+      fetch(API_BASE_URL + '/api/feedback') // load feedback from API
         .then(function (res) {
           if (!res.ok) throw new Error('Backend returned ' + res.status);
           return res.json();
@@ -70,7 +71,7 @@
           listEl.appendChild(table);
         })
         .catch(function () {
-          statusEl.textContent = 'Backend not reachable. Start the server on port 3001 (see RUN_GUIDE.md).';
+          statusEl.textContent = 'Backend not reachable. Please try again later.';
         });
     })();
   </script>
