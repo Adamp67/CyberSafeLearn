@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberSafeLearn - Online Privacy Lesson</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <h1 class="site-title">CyberSafeLearn</h1>
+    <p class="site-tagline">Online privacy lesson.</p>
+    <nav aria-label="Main navigation">
+      <ul class="nav-list">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="lessons.html" class="nav-link nav-link-active">Lessons</a></li>
+        <li><a href="quiz.html" class="nav-link">Quiz</a></li>
+        <li><a href="feedback.html" class="nav-link">Feedback</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="page-main">
+
+    <section id="lesson-content" class="card" data-lesson-id="privacy">
+      <h2>Online privacy</h2>
+      <p>Content is loaded from <code>data/lessons.json</code>.</p>
+      <div id="lesson-text-container"></div>
+
+      <section class="lesson-points" aria-labelledby="privacy-points-heading">
+        <h3 id="privacy-points-heading">Key points</h3>
+        <ul>
+          <li>Limit what you make public on social media and who can see your posts.</li>
+          <li>Only grant app permissions that match what the app actually needs.</li>
+          <li>In group chats with people you do not know well, keep personal details vague.</li>
+          <li>Assume anything you post can be copied or shared; post only what you are comfortable with.</li>
+        </ul>
+      </section>
+
+      <p>Test your knowledge with the privacy quiz.</p>
+      <a href="quiz.html?topic=privacy" class="primary-button">Go to privacy quiz</a>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>CyberSafeLearn &mdash; Online privacy lesson.</p>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="lessons.js"></script>
+</body>
+</html>

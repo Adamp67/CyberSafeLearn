@@ -1,0 +1,57 @@
+<!DOCTYPE html> <!-- use HTML5 -->
+<html lang="en"> <!-- page is in English -->
+<head> <!-- page settings and css link -->
+  <meta charset="UTF-8"> <!-- use UTF-8 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- make layout responsive -->
+  <title>CyberSafeLearn - Lessons</title> <!-- tab title for lessons page -->
+  <link rel="stylesheet" href="style.css"> <!-- main css file -->
+</head> <!-- end head -->
+<body> <!-- page body -->
+
+  <header class="site-header"> <!-- top bar -->
+    <h1 class="site-title">CyberSafeLearn</h1> <!-- site title -->
+    <p class="site-tagline">Browse short security lessons before you take the quiz.</p> <!-- short description for this page -->
+
+    <nav aria-label="Main navigation"> <!-- main nav -->
+      <ul class="nav-list"> <!-- nav links list -->
+        <li> <!-- home item -->
+          <a href="index.html" class="nav-link">Home</a> <!-- go to home -->
+        </li> <!-- end home -->
+        <li> <!-- lessons item -->
+          <a href="lessons.html" class="nav-link nav-link-active">Lessons</a> <!-- current page -->
+        </li> <!-- end lessons -->
+        <li> <!-- quiz item -->
+          <a href="quiz.html" class="nav-link">Quiz</a> <!-- go to quiz -->
+        </li> <!-- end quiz -->
+        <li> <!-- feedback item -->
+          <a href="feedback.html" class="nav-link">Feedback</a> <!-- go to feedback -->
+        </li> <!-- end feedback -->
+      </ul> <!-- end nav list -->
+    </nav> <!-- end nav -->
+  </header> <!-- end header -->
+
+  <main class="page-main"> <!-- main content -->
+
+    <section class="card" aria-labelledby="lessons-overview-heading"> <!-- intro card -->
+      <h2 id="lessons-overview-heading">Lesson topics</h2> <!-- heading for lesson list -->
+      <p>Each lesson is intentionally short so you can quickly refresh your knowledge before doing the quiz.</p> <!-- explain short lesson idea -->
+      <p>The content for these lessons is stored in a JSON file so it is easy to update without changing the layout code.</p> <!-- note that text comes from JSON -->
+    </section> <!-- end intro card -->
+
+    <section class="lessons-grid" aria-label="Available lesson cards"> <!-- grid for lesson cards -->
+      <div id="lessons-list"> <!-- js will put lesson cards here -->
+        <!-- lesson cards are added here by lessons.js --> <!-- placeholder comment -->
+      </div> <!-- end lessons list -->
+    </section> <!-- end lessons grid -->
+
+  </main> <!-- end main -->
+
+  <footer class="site-footer"> <!-- footer text -->
+    <p>CyberSafeLearn &mdash; Lessons powered by JSON data for easy updates.</p> <!-- note about JSON content -->
+  </footer> <!-- end footer -->
+
+  <script src="script.js"></script> <!-- shared js helper -->
+  <script src="lessons.js"></script> <!-- script that loads lessons from JSON -->
+</body> <!-- end body -->
+</html> <!-- end html -->
+

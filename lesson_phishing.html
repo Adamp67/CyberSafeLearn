@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberSafeLearn - Phishing Awareness Lesson</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <h1 class="site-title">CyberSafeLearn</h1>
+    <p class="site-tagline">Phishing awareness lesson.</p>
+    <nav aria-label="Main navigation">
+      <ul class="nav-list">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="lessons.html" class="nav-link nav-link-active">Lessons</a></li>
+        <li><a href="quiz.html" class="nav-link">Quiz</a></li>
+        <li><a href="feedback.html" class="nav-link">Feedback</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="page-main">
+
+    <section id="lesson-content" class="card" data-lesson-id="phishing">
+      <h2>Phishing awareness</h2>
+      <p>Content below is loaded from <code>data/lessons.json</code> so it can be updated in one place.</p>
+      <div id="lesson-text-container"></div>
+
+      <section aria-labelledby="phishing-key-points-heading" class="lesson-points">
+        <h3 id="phishing-key-points-heading">Key points</h3>
+        <ul>
+          <li>Be suspicious of messages that rush you into clicking a link or giving information.</li>
+          <li>Check the sender and Reply-To addresses before trusting an email.</li>
+          <li>Open the official website in a new tab instead of clicking links in messages.</li>
+          <li>Never type your password into a page that has a weird URL or looks slightly off.</li>
+          <li>When in doubt, ask IT support or a friend before doing anything.</li>
+        </ul>
+      </section>
+
+      <section id="phishing-interactive" aria-labelledby="phishing-interactive-heading">
+        <h3 id="phishing-interactive-heading">Practice: spot issues in this email</h3>
+        <p class="small-text">Click each suspicious part of the email. You need to find 6 cues. Each click shows an explanation.</p>
+        <p id="phishing-progress" class="phishing-progress" aria-live="polite">0 of 6 cues found.</p>
+
+        <div class="phishing-email">
+          <div class="phishing-email-header">
+            <p><strong>From:</strong> <span class="phishing-cue" data-cue-id="sender">it-support@secure-mail-help.com</span></p>
+            <p><strong>Reply-To:</strong> <span class="phishing-cue" data-cue-id="replyto">support-verify@uni-accounts.xyz</span></p>
+            <p><strong>To:</strong> you@student.university.ac.uk</p>
+            <p><strong>Subject:</strong> <span class="phishing-cue" data-cue-id="urgent">Urgent: verify your account in the next 30 minutes or it will be locked</span></p>
+          </div>
+          <div class="phishing-email-body">
+            <p><span class="phishing-cue" data-cue-id="greeting">Dear Student,</span></p>
+            <p>We noticed unusual activity on your university account. To avoid losing access, please <a href="#" class="phishing-cue" data-cue-id="link">verify your details using this secure link</a> immediately.</p>
+            <p>If you do not confirm within 30 minutes, your account will be permanently suspended.</p>
+            <p>IT Support Team<br>University Accounts</p>
+            <p><span class="phishing-cue" data-cue-id="attachment">Attachment: Account_Security_Form.zip</span></p>
+          </div>
+        </div>
+
+        <div id="phishing-feedback-area">
+          <h4>What you have spotted</h4>
+          <ul id="phishing-feedback-list"></ul>
+          <div id="phishing-summary-block" class="phishing-summary-block" hidden>
+            <p id="phishing-summary" class="phishing-summary-text"></p>
+            <h4>Checklist to remember</h4>
+            <ul id="phishing-checklist" class="phishing-checklist"></ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="phishing-miniquiz" aria-labelledby="phishing-miniquiz-heading" class="miniquiz-section">
+        <h3 id="phishing-miniquiz-heading">Mini knowledge check</h3>
+        <p class="small-text">Answer these 5 questions. You get instant feedback after each one.</p>
+        <div id="miniquiz-container">
+          <p id="miniquiz-status" aria-live="polite"></p>
+          <div id="miniquiz-question-block" hidden>
+            <p id="miniquiz-question-text"></p>
+            <div id="miniquiz-options"></div>
+            <p id="miniquiz-answer-feedback" class="miniquiz-feedback" aria-live="polite"></p>
+          </div>
+          <div id="miniquiz-result-block" hidden>
+            <p id="miniquiz-score-line"></p>
+            <p id="miniquiz-message"></p>
+            <button type="button" id="miniquiz-retry" class="secondary-button">Try again</button>
+          </div>
+        </div>
+      </section>
+
+      <p>When you are done, try the quiz for this topic.</p>
+      <a href="quiz.html?topic=phishing" class="primary-button">Go to phishing quiz</a>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>CyberSafeLearn &mdash; Phishing awareness lesson.</p>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="lessons.js"></script>
+  <script src="phishingLesson.js"></script>
+</body>
+</html>

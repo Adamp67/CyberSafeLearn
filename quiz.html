@@ -1,0 +1,86 @@
+<!DOCTYPE html> <!-- use HTML5 -->
+<html lang="en"> <!-- page is in English -->
+<head> <!-- quiz page settings -->
+  <meta charset="UTF-8"> <!-- use UTF-8 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- make quiz layout responsive -->
+  <title>CyberSafeLearn - Quiz</title> <!-- tab title for quiz -->
+  <link rel="stylesheet" href="style.css"> <!-- main css file -->
+</head> <!-- end head -->
+<body> <!-- quiz body -->
+
+  <header class="site-header"> <!-- top bar -->
+    <h1 class="site-title">CyberSafeLearn</h1> <!-- site title -->
+    <p class="site-tagline">Interactive quiz with instant feedback.</p> <!-- short quiz description -->
+
+    <nav aria-label="Main navigation"> <!-- main nav -->
+      <ul class="nav-list"> <!-- nav list -->
+        <li> <!-- home link -->
+          <a href="index.html" class="nav-link">Home</a> <!-- go to home -->
+        </li> <!-- end home -->
+        <li> <!-- lessons link -->
+          <a href="lessons.html" class="nav-link">Lessons</a> <!-- go to lessons -->
+        </li> <!-- end lessons -->
+        <li> <!-- quiz link -->
+          <a href="quiz.html" class="nav-link nav-link-active">Quiz</a> <!-- current page -->
+        </li> <!-- end quiz -->
+        <li> <!-- feedback link -->
+          <a href="feedback.html" class="nav-link">Feedback</a> <!-- go to feedback -->
+        </li> <!-- end feedback -->
+      </ul> <!-- end nav list -->
+    </nav> <!-- end nav -->
+  </header> <!-- end header -->
+
+  <main class="page-main"> <!-- main quiz area -->
+
+    <section class="card" aria-labelledby="quiz-heading"> <!-- card that holds quiz -->
+      <h2 id="quiz-heading">Quiz</h2>
+      <p id="quiz-intro">Loading...</p>
+
+      <div id="quiz-status" aria-live="polite"> <!-- shows current question number -->
+        <!-- text like "Question 1 of 10" goes here --> <!-- placeholder -->
+      </div> <!-- end quiz status -->
+
+      <form id="quiz-form"> <!-- form that wraps question and options -->
+        <fieldset> <!-- groups question and answers -->
+          <legend id="quiz-question-text">Loading question...</legend> <!-- question text goes here -->
+          <div id="quiz-options-container"> <!-- js adds radio buttons here -->
+            <!-- answer options are created by quiz.js --> <!-- placeholder -->
+          </div> <!-- end options container -->
+        </fieldset> <!-- end fieldset -->
+      </form> <!-- end quiz form -->
+
+      <div id="quiz-feedback" aria-live="polite"> <!-- area where feedback message shows -->
+        <!-- "Correct" or "Not quite right" text goes here --> <!-- placeholder -->
+      </div> <!-- end feedback -->
+
+      <div class="quiz-buttons"> <!-- buttons for submit and next -->
+        <button type="button" id="submit-answer-button" class="primary-button">Submit answer</button> <!-- send current answer -->
+        <button type="button" id="next-question-button" class="secondary-button" disabled>Next question</button> <!-- go to next question -->
+      </div> <!-- end button row -->
+
+      <section id="quiz-results" aria-labelledby="quiz-results-heading" hidden> <!-- final results, hidden until end -->
+        <h3 id="quiz-results-heading">Your results</h3> <!-- results heading -->
+        <p id="quiz-score-line">You scored 0 out of 10.</p> <!-- line that shows final score -->
+        <p id="quiz-overall-comment">Once you finish the quiz, a short comment about your performance will appear here.</p> <!-- simple text about how it went -->
+        <section aria-labelledby="quiz-tips-heading"> <!-- section for topic tips -->
+          <h4 id="quiz-tips-heading">Improvement tips by topic</h4> <!-- heading for tips -->
+          <div id="quiz-tips-container"> <!-- js adds per-topic tips here -->
+            <!-- tips for weak topics go here after quiz ends --> <!-- placeholder -->
+          </div> <!-- end tips container -->
+        </section> <!-- end tips section -->
+        <button type="button" id="go-to-feedback-button" class="primary-button">Go to feedback form</button> <!-- go to feedback page after quiz -->
+      </section> <!-- end results section -->
+
+    </section> <!-- end quiz card -->
+
+  </main> <!-- end main -->
+
+  <footer class="site-footer"> <!-- footer -->
+    <p>CyberSafeLearn &mdash; Quiz demo with JSON-driven questions.</p> <!-- simple footer text -->
+  </footer> <!-- end footer -->
+
+  <script src="script.js"></script> <!-- shared helper js -->
+  <script src="quiz.js"></script> <!-- quiz logic js (client side only) -->
+</body> <!-- end body -->
+</html> <!-- end html -->
+

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberSafeLearn - Feedback</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <h1 class="site-title">CyberSafeLearn</h1>
+    <p class="site-tagline">Anonymous feedback about the lessons and quiz.</p>
+    <nav aria-label="Main navigation">
+      <ul class="nav-list">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="lessons.html" class="nav-link">Lessons</a></li>
+        <li><a href="quiz.html" class="nav-link">Quiz</a></li>
+        <li><a href="feedback.html" class="nav-link nav-link-active">Feedback</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="page-main">
+
+    <section class="card" aria-labelledby="feedback-heading">
+      <h2 id="feedback-heading">Anonymous feedback form</h2>
+      <p>Share what worked and what could be clearer. Do not include name, email, or student number.</p>
+
+      <form id="feedback-form">
+        <div class="form-group">
+          <label for="feedback-text">Your feedback (max 500 characters)</label>
+          <textarea id="feedback-text" name="feedback-text" rows="5" maxlength="500" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="feedback-rating">Overall experience (optional)</label>
+          <select id="feedback-rating" name="feedback-rating">
+            <option value="">No rating</option>
+            <option value="1">1 - Very confusing</option>
+            <option value="2">2 - Needs improvement</option>
+            <option value="3">3 - Okay</option>
+            <option value="4">4 - Helpful</option>
+            <option value="5">5 - Very helpful</option>
+          </select>
+        </div>
+        <p class="small-text">Feedback is sent to the backend server. Make sure the server is running on port 3001 (see RUN_GUIDE.md).</p>
+        <button type="submit" id="feedback-submit-btn" class="primary-button">Submit feedback</button>
+      </form>
+
+      <p id="feedback-message" class="feedback-message" aria-live="polite" hidden></p>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>CyberSafeLearn &mdash; Feedback stored on the backend.</p>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="api.js"></script>
+  <script>
+    (function () {
+      var form = document.getElementById('feedback-form');
+      var textArea = document.getElementById('feedback-text');
+      var ratingSelect = document.getElementById('feedback-rating');
+      var messageEl = document.getElementById('feedback-message');
+      var submitBtn = document.getElementById('feedback-submit-btn');
+
+      function showMessage(text, isError) {
+        messageEl.textContent = text;
+        messageEl.hidden = false;
+        messageEl.className = isError ? 'feedback-message feedback-error' : 'feedback-message feedback-success';
+      }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var text = textArea.value.trim();
+        if (!text) {
+          showMessage('Please enter some feedback.', true);
+          return;
+        }
+
+        submitBtn.disabled = true;
+        messageEl.hidden = true;
+
+        fetch('http://localhost:3001/api/feedback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: text, rating: ratingSelect.value || '' })
+        })
+          .then(function (res) {
+            if (res.ok) {
+              textArea.value = '';
+              ratingSelect.value = '';
+              showMessage('Thank you. Your feedback has been saved.');
+            } else {
+              return res.json().then(function (body) {
+                showMessage(body.error || 'Something went wrong. Please try again.', true);
+              });
+            }
+          })
+          .catch(function () {
+            showMessage('Backend is not running or unreachable. Start the server on port 3001 (see RUN_GUIDE.md).', true);
+          })
+          .finally(function () {
+            submitBtn.disabled = false;
+          });
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html> <!-- use HTML5 -->
+<html lang="en"> <!-- page is in English -->
+<head> <!-- page settings and links -->
+  <meta charset="UTF-8"> <!-- use UTF-8 so text works -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- make layout work on mobile and desktop -->
+  <title>CyberSafeLearn - Home</title> <!-- tab title -->
+  <link rel="stylesheet" href="style.css"> <!-- main css for the site -->
+</head> <!-- end of head -->
+<body> <!-- visible page content -->
+
+  <header class="site-header"> <!-- top bar with title and nav -->
+    <h1 class="site-title">CyberSafeLearn</h1> <!-- main site heading -->
+    <p class="site-tagline">Short lessons and quizzes about staying safe online for students.</p> <!-- quick summary text -->
+
+    <nav aria-label="Main navigation"> <!-- main nav for the site -->
+      <ul class="nav-list"> <!-- list of nav links -->
+        <li> <!-- home nav item -->
+          <a href="index.html" class="nav-link nav-link-active">Home</a> <!-- current page link -->
+        </li> <!-- end home item -->
+        <li> <!-- lessons nav item -->
+          <a href="lessons.html" class="nav-link">Lessons</a> <!-- go to lessons page -->
+        </li> <!-- end lessons item -->
+        <li> <!-- quiz nav item -->
+          <a href="quiz.html" class="nav-link">Quiz</a> <!-- go to quiz page -->
+        </li> <!-- end quiz item -->
+        <li> <!-- feedback nav item -->
+          <a href="feedback.html" class="nav-link">Feedback</a> <!-- go to feedback page -->
+        </li> <!-- end feedback item -->
+      </ul> <!-- end nav list -->
+    </nav> <!-- end nav -->
+  </header> <!-- end header -->
+
+  <main class="page-main"> <!-- main content for this page -->
+
+    <section class="card" aria-labelledby="home-intro-heading"> <!-- intro card -->
+      <h2 id="home-intro-heading">Welcome to CyberSafeLearn</h2> <!-- intro heading -->
+      <p>CyberSafeLearn is a small information security awareness site designed for university students.</p> <!-- short project description -->
+      <p>Everything runs in your browser, and the system never asks for names, emails, or any personal details.</p> <!-- remind that it is anonymous -->
+      <p>The idea is to learn from short lessons, try a quick quiz, and then leave optional anonymous feedback.</p> <!-- simple flow of the site -->
+    </section> <!-- end intro card -->
+
+    <section class="card" aria-labelledby="home-lessons-heading"> <!-- lessons card -->
+      <h2 id="home-lessons-heading">Learn with short lessons</h2> <!-- lessons heading -->
+      <p>The lessons cover three everyday security topics: phishing awareness, password security, and online privacy.</p> <!-- list lesson topics -->
+      <p>Each topic is written in simple language so it is easy to skim before you start the quiz.</p> <!-- describe style of lessons -->
+      <a href="lessons.html" class="primary-button">View lessons</a> <!-- button to lessons page -->
+    </section> <!-- end lessons card -->
+
+    <section class="card" aria-labelledby="home-quiz-heading"> <!-- quiz card -->
+      <h2 id="home-quiz-heading">Test yourself with a quiz</h2> <!-- quiz heading -->
+      <p>The quiz shows one multiple choice question at a time and gives instant feedback on each answer.</p> <!-- explain quiz flow -->
+      <p>At the end you get a score out of ten plus tips on which topics to review.</p> <!-- explain final result -->
+      <a href="quiz.html" class="primary-button">Start quiz</a> <!-- button to quiz page -->
+    </section> <!-- end quiz card -->
+
+    <section class="card" aria-labelledby="home-feedback-heading">
+      <h2 id="home-feedback-heading">Leave anonymous feedback</h2>
+      <p>You can send anonymous feedback about the lessons or quiz. No names or emails are collected.</p>
+      <p>Feedback is sent to a small backend server (see RUN_GUIDE.md to start it).</p>
+      <a href="feedback.html" class="secondary-button">Open feedback form</a>
+    </section>
+
+  </main> <!-- end main content -->
+
+  <footer class="site-footer"> <!-- footer text -->
+    <p>CyberSafeLearn &mdash; BSc Computer Science final year project demo.</p> <!-- short footer note -->
+  </footer> <!-- end footer -->
+
+  <script src="script.js"></script> <!-- shared js file -->
+</body> <!-- end body -->
+</html> <!-- end html -->

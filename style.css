@@ -1,0 +1,320 @@
+/* main css for the whole site */
+
+:root { /* shared colours, fonts, etc */
+  --color-background: #f5f7fb; /* page background colour */
+  --color-surface: #ffffff; /* card background colour */
+  --color-primary: #0057b8; /* main blue colour */
+  --color-primary-light: #2f80ed; /* lighter blue for hover */
+  --color-secondary: #444444; /* dark grey for secondary buttons */
+  --color-text-main: #222222; /* main text colour */
+  --color-text-muted: #555555; /* softer text colour */
+  --color-border: #d0d7e2; /* card and input border colour */
+  --color-correct: #1b8733; /* green for correct feedback */
+  --color-incorrect: #c62828; /* red for incorrect feedback */
+  --shadow-card: 0 2px 6px rgba(0, 0, 0, 0.05); /* light shadow for cards */
+  --radius-card: 8px; /* card corner radius */
+  --font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; /* use system font for speed */
+} /* end root variables */
+
+* { /* apply to all elements */
+  box-sizing: border-box; /* include padding and border in width/height */
+} /* end global box sizing */
+
+body { /* basic page style */
+  margin: 0; /* remove default margin */
+  padding: 0; /* remove default padding */
+  font-family: var(--font-main); /* use main font */
+  background-color: var(--color-background); /* set background colour */
+  color: var(--color-text-main); /* set text colour */
+  line-height: 1.6; /* slightly bigger line height for readability */
+} /* end body */
+
+.site-header { /* header bar at top of page */
+  background-color: var(--color-surface); /* white background */
+  border-bottom: 1px solid var(--color-border); /* thin bottom border */
+  padding: 1rem 1.5rem; /* space around header content */
+} /* end header */
+
+.site-title { /* main title text */
+  margin: 0; /* remove default margin */
+  font-size: 1.6rem; /* make title slightly larger */
+} /* end title */
+
+.site-tagline { /* small line under title */
+  margin: 0.25rem 0 0; /* small top margin */
+  color: var(--color-text-muted); /* softer colour */
+  font-size: 0.95rem; /* slightly smaller text */
+} /* end tagline */
+
+.nav-list { /* list that holds nav links */
+  list-style: none; /* remove bullets */
+  padding: 0; /* remove padding */
+  margin: 0.75rem 0 0; /* put a bit of space above nav */
+  display: flex; /* lay items in a row */
+  flex-wrap: wrap; /* allow wrap on small screens */
+  gap: 0.75rem; /* space between items */
+} /* end nav list */
+
+.nav-link { /* basic style for nav links */
+  text-decoration: none; /* no underline */
+  color: var(--color-primary); /* blue text */
+  padding: 0.25rem 0.5rem; /* clickable area around text */
+  border-radius: 4px; /* small rounded corners */
+} /* end nav link */
+
+.nav-link:hover, /* nav hover state */
+.nav-link:focus-visible { /* keyboard focus state */
+  background-color: var(--color-primary-light); /* lighter blue background */
+  color: #ffffff; /* white text on hover/focus */
+  outline: none; /* remove default outline */
+} /* end nav hover/focus */
+
+.nav-link-active { /* active nav item (current page) */
+  font-weight: 600; /* slightly bolder text */
+  background-color: var(--color-primary); /* main blue background */
+  color: #ffffff; /* white text */
+} /* end active nav */
+
+.page-main { /* wrapper for page content */
+  max-width: 960px; /* limit width for easier reading */
+  margin: 1.5rem auto 2rem; /* center on page with top/bottom spacing */
+  padding: 0 1rem; /* small side padding */
+} /* end main wrapper */
+
+.card { /* generic card layout */
+  background-color: var(--color-surface); /* white background */
+  border-radius: var(--radius-card); /* rounded corners */
+  box-shadow: var(--shadow-card); /* soft shadow */
+  padding: 1.25rem 1.5rem; /* space inside card */
+  border: 1px solid var(--color-border); /* light border */
+  margin-bottom: 1rem; /* space under each card */
+} /* end card */
+
+.primary-button { /* main buttons (blue) */
+  display: inline-block; /* behave like inline and block combined */
+  padding: 0.5rem 1rem; /* button padding */
+  background-color: var(--color-primary); /* blue background */
+  color: #ffffff; /* white text */
+  border: none; /* no default border */
+  border-radius: 4px; /* rounded corners */
+  font-size: 1rem; /* normal font size */
+  cursor: pointer; /* show pointer on hover */
+  text-decoration: none; /* remove underline on links styled as buttons */
+} /* end primary button */
+
+.primary-button:hover, /* hover style for primary button */
+.primary-button:focus-visible { /* keyboard focus style */
+  background-color: var(--color-primary-light); /* lighter blue on hover/focus */
+  outline: none; /* remove default outline */
+} /* end primary hover/focus */
+
+.primary-button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.secondary-button { /* secondary buttons (white) */
+  display: inline-block; /* same as primary */
+  padding: 0.5rem 1rem; /* padding */
+  background-color: #ffffff; /* white background */
+  color: var(--color-secondary); /* dark grey text */
+  border: 1px solid var(--color-border); /* light border */
+  border-radius: 4px; /* rounded corners */
+  font-size: 1rem; /* normal font */
+  cursor: pointer; /* pointer on hover */
+} /* end secondary button */
+
+.secondary-button:hover, /* hover for secondary */
+.secondary-button:focus-visible { /* focus for secondary */
+  background-color: #eef2f9; /* light grey-blue on hover/focus */
+  outline: none; /* remove default outline */
+} /* end secondary hover/focus */
+
+.secondary-button:disabled { /* disabled state for next button etc */
+  opacity: 0.6; /* fade it a bit */
+  cursor: not-allowed; /* show not allowed cursor */
+} /* end disabled button */
+
+.site-footer { /* footer at bottom of each page */
+  text-align: center; /* center the text */
+  font-size: 0.9rem; /* slightly smaller text */
+  color: var(--color-text-muted); /* softer colour */
+  padding: 1rem 1.5rem 1.5rem; /* padding around footer text */
+} /* end footer */
+
+.lessons-grid { /* layout for lesson cards */
+  display: grid; /* use CSS grid */
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); /* auto number of columns */
+  gap: 1rem; /* space between cards */
+} /* end lessons grid */
+
+.lesson-card { /* style for each lesson card */
+  background-color: var(--color-surface); /* white background */
+  border-radius: var(--radius-card); /* rounded corners */
+  border: 1px solid var(--color-border); /* thin border */
+  padding: 1rem; /* inner spacing */
+  box-shadow: var(--shadow-card); /* soft shadow */
+  display: flex; /* vertical flex layout */
+  flex-direction: column; /* stack children vertically */
+  justify-content: space-between; /* spread content a bit */
+} /* end lesson card */
+
+.lesson-card h3 { /* lesson card titles */
+  margin-top: 0; /* remove top margin */
+  margin-bottom: 0.5rem; /* small bottom margin */
+} /* end lesson title */
+
+.lesson-card p { /* text inside lesson cards */
+  margin-top: 0; /* remove top margin */
+  margin-bottom: 0.75rem; /* bottom space before button */
+  color: var(--color-text-muted); /* softer colour */
+} /* end lesson text */
+
+.quiz-buttons { /* wrapper for quiz buttons row */
+  display: flex; /* show buttons in a row */
+  gap: 0.5rem; /* space between buttons */
+  margin-top: 0.75rem; /* space above buttons */
+  flex-wrap: wrap; /* allow wrap on small screens */
+} /* end quiz buttons */
+
+#quiz-status { /* text showing "Question x of y" */
+  margin-top: 0.5rem; /* space above */
+  margin-bottom: 0.75rem; /* space below */
+  font-weight: 500; /* slightly bolder */
+} /* end quiz status */
+
+#quiz-feedback { /* area for per-question feedback */
+  margin-top: 0.75rem; /* space above feedback */
+  font-weight: 500; /* slightly bolder text */
+} /* end quiz feedback */
+
+.quiz-feedback-correct { /* style for correct feedback */
+  color: var(--color-correct); /* green text */
+} /* end correct feedback */
+
+.quiz-feedback-incorrect { /* style for wrong feedback */
+  color: var(--color-incorrect); /* red text */
+} /* end incorrect feedback */
+
+#quiz-results { /* final results section */
+  margin-top: 1rem; /* space above */
+  border-top: 1px solid var(--color-border); /* line above results */
+  padding-top: 1rem; /* space between line and text */
+} /* end quiz results */
+
+#quiz-tips-container { /* holds tips for weak topics */
+  margin-top: 0.5rem; /* small gap above tips */
+} /* end tips container */
+
+.topic-tips { /* one topic block inside results */
+  margin-bottom: 0.75rem; /* space under each topic block */
+} /* end topic tips */
+
+.form-group { /* simple form spacing helper */
+  margin-bottom: 0.75rem; /* space between groups */
+} /* end form group */
+
+label { /* form labels */
+  display: block; /* put label on its own line */
+  margin-bottom: 0.25rem; /* small gap under label */
+  font-weight: 500; /* slightly bolder so it stands out */
+} /* end label */
+
+input[type="radio"] { /* radio button tweak */
+  margin-right: 0.4rem; /* small gap between circle and text */
+} /* end radio style */
+
+textarea, /* text area style */
+select { /* select style (shared with textarea) */
+  width: 100%; /* take full width of container */
+  padding: 0.4rem; /* inner padding */
+  border-radius: 4px; /* rounded corners */
+  border: 1px solid var(--color-border); /* thin border */
+  font-family: var(--font-main); /* same font as body */
+  font-size: 1rem; /* normal size text */
+} /* end textarea/select */
+
+textarea:focus-visible, /* focus style for textarea */
+select:focus-visible { /* focus style for select */
+  outline: 2px solid var(--color-primary-light); /* blue outline on focus */
+  outline-offset: 2px; /* move outline slightly away */
+} /* end textarea/select focus */
+
+.small-text { /* small helper text style */
+  font-size: 0.85rem; /* slightly smaller text */
+  color: var(--color-text-muted); /* softer colour */
+} /* end small text */
+
+.feedback-confirmation,
+.feedback-message { margin-top: 0.5rem; font-weight: 500; }
+.feedback-success { color: var(--color-correct); }
+.feedback-error { color: var(--color-incorrect); }
+
+.lesson-points ul { /* list under lesson extra points */
+  padding-left: 1.1rem; /* indent bullets a bit */
+} /* end lesson points list */
+
+.lesson-points li { /* each bullet under lesson points */
+  margin-bottom: 0.4rem; /* small space under each item */
+} /* end lesson points item */
+
+.phishing-email { /* wrapper for fake phishing email */
+  border: 1px solid var(--color-border); /* light border around email */
+  border-radius: 6px; /* slightly rounded corners */
+  padding: 0.75rem 1rem; /* inner spacing */
+  background-color: #fdfdfd; /* near white background */
+  margin-top: 0.75rem; /* space above email block */
+} /* end phishing email */
+
+.phishing-email-header { /* header part of email */
+  border-bottom: 1px solid var(--color-border); /* line between header and body */
+  margin-bottom: 0.5rem; /* space under header */
+  padding-bottom: 0.5rem; /* padding under header text */
+} /* end phishing email header */
+
+.phishing-email-body p { /* body paragraph styling */
+  margin: 0.4rem 0; /* small vertical spacing */
+} /* end email body paragraphs */
+
+.phishing-cue { /* clickable suspicious element */
+  cursor: pointer; /* show pointer on hover */
+  background-color: #fff4e5; /* light orange background */
+  border-bottom: 1px dashed #e08a00; /* dashed underline to hint clickable */
+} /* end phishing cue */
+
+.phishing-cue-found { /* style after user has clicked a cue */
+  background-color: #e6ffed; /* light green background */
+  border-bottom-color: #1b8733; /* change underline colour */
+} /* end phishing cue found */
+
+.phishing-progress { /* "X of 6 cues found" */
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+.phishing-summary-block { margin-top: 1rem; }
+.phishing-summary-text { font-weight: 500; }
+.phishing-checklist { padding-left: 1.25rem; margin: 0.5rem 0 0; }
+
+.miniquiz-section { margin-top: 1.5rem; border-top: 1px solid var(--color-border); padding-top: 1rem; }
+#miniquiz-options label { display: block; margin: 0.4rem 0; cursor: pointer; }
+.miniquiz-feedback { margin-top: 0.75rem; font-weight: 500; }
+.miniquiz-correct { color: var(--color-correct); }
+.miniquiz-incorrect { color: var(--color-incorrect); }
+#miniquiz-result-block { margin-top: 0.75rem; }
+
+.admin-warning { background: #fff4e5; padding: 0.5rem; border-radius: 4px; margin-bottom: 1rem; font-size: 0.9rem; }
+.admin-table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
+.admin-table th, .admin-table td { border: 1px solid var(--color-border); padding: 0.4rem 0.5rem; text-align: left; }
+.admin-table th { background: #f0f2f5; font-weight: 600; }
+
+@media (max-width: 600px) { /* tweaks for small screens */
+  .site-header { /* header on mobile */
+    padding: 0.75rem 1rem; /* slightly smaller padding */
+  } /* end mobile header */
+
+  .page-main { /* main wrapper on mobile */
+    margin-top: 1rem; /* bring content a bit closer to top */
+  } /* end mobile main */
+
+  .nav-list { /* nav on mobile */
+    flex-direction: column; /* stack items vertically */
+    align-items: flex-start; /* left align items */
+  } /* end mobile nav */
+} /* end media query */

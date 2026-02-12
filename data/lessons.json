@@ -1,0 +1,20 @@
+[
+  {
+    "id": "phishing",
+    "topic": "Phishing awareness",
+    "title": "Spotting suspicious messages",
+    "text": "Phishing is when someone pretends to be a trusted person or company to trick you into clicking a link, opening an attachment, or giving away your details. As a student you might get fake emails about your university account, library fines, or course sign-ups. The key is to slow down: real organisations rarely demand instant action, and they will not ask for your password by email. Always check the sender address, avoid clicking links in unexpected messages, and when in doubt contact the university or company through their official website."
+  },
+  {
+    "id": "passwords",
+    "topic": "Password security",
+    "title": "Keeping your passwords strong",
+    "text": "Using the same short password everywhere makes life easy for attackers. If one site is breached, they can try that password on your email and university account. Use longer passphrases (several random words together), avoid obvious personal details like your name or birthday, and do not reuse the same password for important accounts. Where possible, turn on two-factor or multi-factor authentication so that even if someone gets your password, they still cannot log in without your phone or another step."
+  },
+  {
+    "id": "privacy",
+    "topic": "Online privacy",
+    "title": "Sharing less public information",
+    "text": "Social media posts, public profiles, and oversharing in group chats can reveal more about you than you expect. Once something is online it can be copied or shared. Think about who can see your posts, limit what you make public, and be careful with location sharing and photos that show your home, workplace, or daily routine. In group chats with people you do not know well, keep personal details vague and avoid posting your full address or schedule."
+  }
+]

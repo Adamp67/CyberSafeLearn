@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberSafeLearn - Admin feedback (demo)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <h1 class="site-title">CyberSafeLearn</h1>
+    <p class="site-tagline">Admin: view stored feedback (demo only).</p>
+    <nav aria-label="Main navigation">
+      <ul class="nav-list">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="lessons.html" class="nav-link">Lessons</a></li>
+        <li><a href="quiz.html" class="nav-link">Quiz</a></li>
+        <li><a href="feedback.html" class="nav-link">Feedback</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="page-main">
+
+    <section class="card" aria-labelledby="admin-heading">
+      <h2 id="admin-heading">Stored feedback</h2>
+      <p class="admin-warning">This page is for demonstration and local testing only. In a real deployment this would be protected (e.g. authentication).</p>
+      <p id="admin-status" aria-live="polite">Loading...</p>
+      <div id="admin-list"></div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>CyberSafeLearn &mdash; Admin demo.</p>
+  </footer>
+
+  <script>
+    (function () {
+      var statusEl = document.getElementById('admin-status');
+      var listEl = document.getElementById('admin-list');
+
+      fetch('http://localhost:3001/api/feedback')
+        .then(function (res) {
+          if (!res.ok) throw new Error('Backend returned ' + res.status);
+          return res.json();
+        })
+        .then(function (data) {
+          if (!Array.isArray(data)) { statusEl.textContent = 'Unexpected data.'; return; }
+          statusEl.textContent = data.length + ' feedback entries.';
+          listEl.innerHTML = '';
+          if (data.length === 0) {
+            listEl.textContent = 'No feedback yet.';
+            return;
+          }
+          var table = document.createElement('table');
+          table.className = 'admin-table';
+          table.setAttribute('aria-label', 'Feedback entries');
+          var thead = document.createElement('thead');
+          thead.innerHTML = '<tr><th>Time</th><th>Rating</th><th>Feedback</th></tr>';
+          table.appendChild(thead);
+          var tbody = document.createElement('tbody');
+          data.forEach(function (entry) {
+            var tr = document.createElement('tr');
+            tr.innerHTML = '<td>' + (entry.timestamp || '') + '</td><td>' + (entry.rating || '') + '</td><td>' + (entry.text || '').replace(/</g, '&lt;') + '</td>';
+            tbody.appendChild(tr);
+          });
+          table.appendChild(tbody);
+          listEl.appendChild(table);
+        })
+        .catch(function () {
+          statusEl.textContent = 'Backend not reachable. Start the server on port 3001 (see RUN_GUIDE.md).';
+        });
+    })();
+  </script>
+</body>
+</html>
