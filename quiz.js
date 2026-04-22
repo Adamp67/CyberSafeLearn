@@ -1,40 +1,106 @@
-// this script controls the quiz: load questions, manage state, update ui
+// Quiz: single-topic or master (all topics), per-topic scores, 80% mastery threshold
 
-document.addEventListener('DOMContentLoaded', function () { // wait for dom ready
-  const statusElement = document.getElementById('quiz-status'); // shows "Question x of y"
-  const questionTextElement = document.getElementById('quiz-question-text'); // question text area
-  const optionsContainer = document.getElementById('quiz-options-container'); // where answer options go
-  const feedbackElement = document.getElementById('quiz-feedback'); // shows feedback text
-  const submitButton = document.getElementById('submit-answer-button'); // button to submit answer
-  const nextButton = document.getElementById('next-question-button'); // button to move to next question
-  const resultsSection = document.getElementById('quiz-results'); // final results section
-  const scoreLine = document.getElementById('quiz-score-line'); // final score line
-  const overallComment = document.getElementById('quiz-overall-comment'); // overall comment text
-  const tipsContainer = document.getElementById('quiz-tips-container'); // container for tips by topic
-  const goToFeedbackButton = document.getElementById('go-to-feedback-button'); // button to go to feedback page
+document.addEventListener('DOMContentLoaded', function () {
+  const MASTERY_THRESHOLD_PCT = 80;
+  const TOPIC_ORDER = ['Phishing awareness', 'Password security', 'Online privacy'];
+  const TOPIC_TO_LESSON = {
+    'Phishing awareness': 'lesson_phishing.html',
+    'Password security': 'lesson_passwords.html',
+    'Online privacy': 'lesson_privacy.html'
+  };
+  const SLUG_TO_TOPIC = {
+    phishing: 'Phishing awareness',
+    passwords: 'Password security',
+    privacy: 'Online privacy'
+  };
 
-  const quizState = { // central quiz state object
-    questions: [], // all phishing questions
-    currentIndex: 0, // current question index
-    score: 0, // number of correct answers
-    wrongTipsByTopic: {}, // topic -> list of tips
-    perQuestion: [] // array of { hasSubmitted, isCorrect, hasScored }
-  }; // end quizState
+  const statusElement = document.getElementById('quiz-status');
+  const questionTextElement = document.getElementById('quiz-question-text');
+  const optionsContainer = document.getElementById('quiz-options-container');
+  const feedbackElement = document.getElementById('quiz-feedback');
+  const submitButton = document.getElementById('submit-answer-button');
+  const nextButton = document.getElementById('next-question-button');
+  const resultsSection = document.getElementById('quiz-results');
+  const scoreLine = document.getElementById('quiz-score-line');
+  const overallComment = document.getElementById('quiz-overall-comment');
+  const tipsContainer = document.getElementById('quiz-tips-container');
+  const goToFeedbackButton = document.getElementById('go-to-feedback-button');
+  const submitErrorElement = document.getElementById('quiz-submit-error');
+  const masteryBanner = document.getElementById('quiz-mastery-banner');
+  const topicBreakdownList = document.getElementById('quiz-topic-breakdown-list');
+  const reviseContainer = document.getElementById('quiz-revise-container');
+  const reviseMessage = document.getElementById('quiz-revise-message');
+  const reviseLink = document.getElementById('quiz-revise-link');
+  const resultsHeadline = document.getElementById('quiz-results-headline');
 
-  // -------- data loading layer --------
+  function shuffleArray(items) {
+    const arr = items.slice();
+    for (let i = arr.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const tmp = arr[i];
+      arr[i] = arr[j];
+      arr[j] = tmp;
+    }
+    return arr;
+  }
 
-  // topic from URL: ?topic=phishing|passwords|privacy -> filter questions
-  const topicParam = (function () {
-    const params = new URLSearchParams(window.location.search);
-    return (params.get('topic') || 'phishing').toLowerCase();
-  })();
-  const topicMap = { phishing: 'Phishing awareness', passwords: 'Password security', privacy: 'Online privacy' };
-  const topicLabel = topicMap[topicParam] || topicMap.phishing;
+  function clearSubmitError() {
+    if (submitErrorElement) {
+      submitErrorElement.textContent = '';
+      submitErrorElement.hidden = true;
+    }
+  }
+
+  function showSubmitError(message) {
+    if (submitErrorElement) {
+      submitErrorElement.textContent = message;
+      submitErrorElement.hidden = false;
+    }
+  }
+
+  document.addEventListener('change', function (e) {
+    if (e.target && e.target.matches && e.target.matches('input[name="quiz-options"]')) {
+      clearSubmitError();
+    }
+  });
+
+  const quizState = {
+    questions: [],
+    currentIndex: 0,
+    scoresByTopic: {},
+    wrongTipsByTopic: {},
+    perQuestion: [],
+    isMasterQuiz: false,
+    topicLabel: ''
+  };
+
+  const params = new URLSearchParams(window.location.search);
+  const rawTopicParam = params.get('topic');
+  const topicKey = rawTopicParam ? rawTopicParam.trim().toLowerCase() : '';
+  quizState.isMasterQuiz = !rawTopicParam || rawTopicParam.trim() === '' || topicKey === 'all';
+  quizState.topicLabel = quizState.isMasterQuiz ? '' : (SLUG_TO_TOPIC[topicKey] || SLUG_TO_TOPIC.phishing);
 
   const quizHeading = document.getElementById('quiz-heading');
   const quizIntro = document.getElementById('quiz-intro');
-  if (quizHeading) quizHeading.textContent = topicLabel + ' quiz';
-  if (quizIntro) quizIntro.textContent = 'Questions are loaded from data/questions.json and filtered by topic.';
+  if (quizHeading) {
+    quizHeading.textContent = quizState.isMasterQuiz ? 'Master quiz' : quizState.topicLabel + ' quiz';
+  }
+  if (quizIntro) {
+    quizIntro.textContent = quizState.isMasterQuiz
+      ? 'All three topics in one quiz: phishing, passwords, and privacy. Score 80% or higher to earn mastery.'
+      : 'Multiple-choice questions on this topic only. One chance per question — choose carefully.';
+  }
+
+  function initScoresByTopic(questions) {
+    const scores = {};
+    questions.forEach(function (q) {
+      if (!scores[q.topic]) {
+        scores[q.topic] = { correct: 0, total: 0 };
+      }
+      scores[q.topic].total += 1;
+    });
+    return scores;
+  }
 
   loadJsonFile('data/questions.json')
     .then(function (data) {
@@ -45,14 +111,19 @@ document.addEventListener('DOMContentLoaded', function () { // wait for dom read
         return;
       }
 
-      const filtered = data.filter(function (q) { return q.topic === topicLabel; });
-      quizState.questions = filtered;
-      quizState.perQuestion = filtered.map(function () {
-        return { hasSubmitted: false, isCorrect: false, hasScored: false };
+      const filtered = quizState.isMasterQuiz
+        ? data.slice()
+        : data.filter(function (q) { return q.topic === quizState.topicLabel; });
+
+      quizState.scoresByTopic = initScoresByTopic(filtered);
+      const ordered = quizState.isMasterQuiz ? shuffleArray(filtered) : filtered;
+      quizState.questions = ordered;
+      quizState.perQuestion = ordered.map(function () {
+        return { answerLocked: false, isCorrect: false };
       });
 
       if (!quizState.questions.length) {
-        statusElement.textContent = 'No questions found for this topic.';
+        statusElement.textContent = 'No questions found for this quiz.';
         submitButton.disabled = true;
         nextButton.disabled = true;
         return;
@@ -61,187 +132,270 @@ document.addEventListener('DOMContentLoaded', function () { // wait for dom read
       renderQuestion(quizState, statusElement, questionTextElement, optionsContainer, feedbackElement, submitButton, nextButton);
     });
 
-  // -------- controller: handling user actions --------
+  function setQuizRadiosDisabled(disabled) {
+    document.querySelectorAll('input[name="quiz-options"]').forEach(function (r) {
+      r.disabled = disabled;
+    });
+  }
 
-  submitButton.addEventListener('click', function () { // when user clicks submit answer
-    if (!quizState.questions.length) return; // no questions loaded
+  submitButton.addEventListener('click', function () {
+    if (!quizState.questions.length) return;
 
-    const selectedIndex = getSelectedOptionIndex(); // get index of chosen answer
-    if (selectedIndex === null) { // if nothing is chosen
-      alert('Please choose an answer before submitting.'); // ask user to pick something
-      return; // stop here
-    } // end selected check
+    const qState = quizState.perQuestion[quizState.currentIndex];
+    if (qState.answerLocked) return;
 
-    const question = quizState.questions[quizState.currentIndex]; // current question object
-    const isCorrect = selectedIndex === question.correctIndex; // check if answer is right
-    const qState = quizState.perQuestion[quizState.currentIndex]; // state for this question
-
-    applyAnswerResult(quizState, qState, question, isCorrect); // update score and tips
-    renderFeedback(feedbackElement, isCorrect, question); // update feedback text and style
-
-    qState.hasSubmitted = true; // mark that user submitted at least once
-    qState.isCorrect = isCorrect; // remember last correctness
-
-    nextButton.disabled = false; // allow moving to next after at least one submit
-  }); // end submit click handler
-
-  nextButton.addEventListener('click', function () { // when user clicks next question
-    const qState = quizState.perQuestion[quizState.currentIndex]; // state for current question
-    if (!qState || !qState.hasSubmitted) { // if they have not submitted yet
-      alert('Please submit an answer before continuing.'); // soft reminder
-      return; // do nothing
-    } // end submitted check
-
-    quizState.currentIndex += 1; // move to next question index
-
-    if (quizState.currentIndex >= quizState.questions.length) { // if we passed the last question
-      finishQuiz(quizState, scoreLine, overallComment, tipsContainer, resultsSection); // show final results
-    } else { // still more questions to go
-      renderQuestion(quizState, statusElement, questionTextElement, optionsContainer, feedbackElement, submitButton, nextButton); // show next question
-    } // end last question check
-  }); // end next click handler
-
-  if (goToFeedbackButton) { // if button exists in the dom
-    goToFeedbackButton.addEventListener('click', function () { // handle click
-      window.location.href = 'feedback.html'; // go to feedback form
-    }); // end click handler
-  } // end feedback button check
-
-  // -------- state helpers --------
-
-  function applyAnswerResult(quizState, qState, question, isCorrect) { // update score and tips safely
-    if (isCorrect && !qState.hasScored) { // avoid double scoring
-      quizState.score += 1;
-      qState.hasScored = true;
+    const selectedIndex = getSelectedOptionIndex();
+    if (selectedIndex === null) {
+      showSubmitError('Please select an answer.');
+      return;
     }
 
-    if (!isCorrect) { // for wrong answers we track tips
-      if (!quizState.wrongTipsByTopic[question.topic]) { // if this topic has no tips stored yet
-        quizState.wrongTipsByTopic[question.topic] = []; // start a list for this topic
-      } // end topic init
-      if (quizState.wrongTipsByTopic[question.topic].indexOf(question.tip) === -1) { // avoid duplicate tips
-        quizState.wrongTipsByTopic[question.topic].push(question.tip); // remember this tip for results screen
-      } // end duplicate check
-    } // end incorrect branch
-  } // end applyAnswerResult
+    clearSubmitError();
 
-  // -------- rendering layer --------
+    const question = quizState.questions[quizState.currentIndex];
+    const isCorrect = selectedIndex === question.correctIndex;
 
-  function renderQuestion(quizState, statusElement, questionTextElement, optionsContainer, feedbackElement, submitButton, nextButton) { // show current question
-    const question = quizState.questions[quizState.currentIndex]; // get question
+    qState.answerLocked = true;
+    qState.isCorrect = isCorrect;
+    setQuizRadiosDisabled(true);
 
-    statusElement.textContent = 'Question ' + (quizState.currentIndex + 1) + ' of ' + quizState.questions.length; // update status line
-    questionTextElement.textContent = question.question; // put question text into legend
+    recordFirstAttemptOnly(quizState, question, isCorrect);
+    renderFeedback(feedbackElement, isCorrect, question);
 
-    optionsContainer.innerHTML = ''; // clear out any old options
+    submitButton.disabled = true;
+    nextButton.disabled = false;
+  });
 
-    question.options.forEach(function (optionText, index) { // make each radio option
-      const optionId = 'quiz-option-' + quizState.currentIndex + '-' + index; // build a unique id
+  nextButton.addEventListener('click', function () {
+    const qState = quizState.perQuestion[quizState.currentIndex];
+    if (!qState || !qState.answerLocked) {
+      showSubmitError('Please submit an answer before continuing.');
+      return;
+    }
 
-      const wrapper = document.createElement('div'); // wrapper div for radio and label
-      const radio = document.createElement('input'); // new radio input
-      radio.type = 'radio'; // type is radio
-      radio.name = 'quiz-options'; // same name so only one can be checked
-      radio.id = optionId; // id for label to point to
-      radio.value = String(index); // store index as a string
+    clearSubmitError();
 
-      const label = document.createElement('label'); // label for this radio
-      label.setAttribute('for', optionId); // link label to radio
-      label.textContent = optionText; // set label text
+    quizState.currentIndex += 1;
 
-      wrapper.appendChild(radio); // put radio in wrapper
-      wrapper.appendChild(label); // put label after it
-      optionsContainer.appendChild(wrapper); // add wrapper to options container
-    }); // end options loop
+    if (quizState.currentIndex >= quizState.questions.length) {
+      finishQuiz(quizState, scoreLine, overallComment, tipsContainer, resultsSection, submitButton, nextButton);
+    } else {
+      renderQuestion(quizState, statusElement, questionTextElement, optionsContainer, feedbackElement, submitButton, nextButton);
+    }
+  });
 
-    feedbackElement.textContent = ''; // clear old feedback
-    feedbackElement.className = ''; // clear feedback style classes
+  if (goToFeedbackButton) {
+    goToFeedbackButton.addEventListener('click', function () {
+      window.location.href = 'feedback.html';
+    });
+  }
 
-    submitButton.disabled = false; // always allow submitting on this question
-    nextButton.disabled = true; // require at least one submit before next
+  function recordFirstAttemptOnly(quizState, question, isCorrect) {
+    if (isCorrect && quizState.scoresByTopic[question.topic]) {
+      quizState.scoresByTopic[question.topic].correct += 1;
+    }
 
-    if (quizState.currentIndex === quizState.questions.length - 1) { // if this is last question
-      nextButton.textContent = 'See results'; // tell user that results are next
-    } else { // not last question
-      nextButton.textContent = 'Next question'; // normal next label
-    } // end last question check
-  } // end renderQuestion
+    if (!isCorrect) {
+      if (!quizState.wrongTipsByTopic[question.topic]) {
+        quizState.wrongTipsByTopic[question.topic] = [];
+      }
+      if (quizState.wrongTipsByTopic[question.topic].indexOf(question.tip) === -1) {
+        quizState.wrongTipsByTopic[question.topic].push(question.tip);
+      }
+    }
+  }
 
-  function getSelectedOptionIndex() { // figure out which option is selected
-    const radios = document.querySelectorAll('input[name="quiz-options"]'); // all quiz radio buttons
-    for (let i = 0; i < radios.length; i += 1) { // loop over radios
-      if (radios[i].checked) { // if this one is checked
-        return parseInt(radios[i].value, 10); // return its numeric index
-      } // end checked check
-    } // end loop
-    return null; // if none were checked, return null
-  } // end getSelectedOptionIndex
+  function findWeakestTopic(scoresByTopic) {
+    let minRatio = Infinity;
+    let candidates = [];
+    TOPIC_ORDER.forEach(function (topic) {
+      const s = scoresByTopic[topic];
+      if (!s || s.total === 0) return;
+      const ratio = s.correct / s.total;
+      if (ratio < minRatio) {
+        minRatio = ratio;
+        candidates = [topic];
+      } else if (ratio === minRatio) {
+        candidates.push(topic);
+      }
+    });
+    if (!candidates.length) {
+      return TOPIC_ORDER[0];
+    }
+    for (let i = 0; i < TOPIC_ORDER.length; i += 1) {
+      if (candidates.indexOf(TOPIC_ORDER[i]) !== -1) {
+        return TOPIC_ORDER[i];
+      }
+    }
+    return candidates[0];
+  }
 
-  function renderFeedback(feedbackElement, isCorrect, question) { // show feedback line after answer
-    const baseMessage = isCorrect ? 'Correct! ' : 'Not quite right. '; // pick start of the message
-    feedbackElement.textContent = baseMessage + question.explanation; // show message plus explanation from json
+  function renderQuestion(quizState, statusElement, questionTextElement, optionsContainer, feedbackElement, submitButton, nextButton) {
+    const question = quizState.questions[quizState.currentIndex];
 
-    if (isCorrect) { // answer was correct
-      feedbackElement.className = 'quiz-feedback-correct'; // use green style
-    } else { // answer was wrong
-      feedbackElement.className = 'quiz-feedback-incorrect'; // use red style
-    } // end isCorrect check
-  } // end renderFeedback
+    statusElement.textContent = 'Question ' + (quizState.currentIndex + 1) + ' of ' + quizState.questions.length;
+    questionTextElement.textContent = question.question;
 
-  function finishQuiz(quizState, scoreLine, overallComment, tipsContainer, resultsSection) { // finish quiz and show results
-    const totalQuestions = quizState.questions.length; // how many questions we had
-    let scoreOutOfTen = quizState.score; // start with raw score
+    optionsContainer.innerHTML = '';
 
-    if (totalQuestions !== 10 && totalQuestions > 0) { // if not exactly 10
-      scoreOutOfTen = Math.round((quizState.score / totalQuestions) * 10); // scale to 0-10
-    } // end scale check
+    question.options.forEach(function (optionText, index) {
+      const optionId = 'quiz-option-' + quizState.currentIndex + '-' + index;
 
-    scoreLine.textContent = 'You scored ' + scoreOutOfTen + ' out of 10.'; // show final score
+      const wrapper = document.createElement('div');
+      wrapper.className = 'quiz-option-row';
+      const radio = document.createElement('input');
+      radio.type = 'radio';
+      radio.name = 'quiz-options';
+      radio.id = optionId;
+      radio.value = String(index);
 
-    let comment = ''; // store simple sentence about performance
-    if (scoreOutOfTen <= 4) { // low score
-      comment = 'You might want to revisit the phishing lesson and then try again.'; // suggest revisiting lesson
-    } else if (scoreOutOfTen <= 7) { // middle score
-      comment = 'Nice effort. You have a decent base, but reviewing the tips below could make you more confident.'; // mixed feedback
-    } else { // high score
-      comment = 'Great work. You spotted most phishing tricks, but check the tips below for small improvements.'; // positive feedback
-    } // end comment choice
+      const label = document.createElement('label');
+      label.setAttribute('for', optionId);
+      label.textContent = optionText;
 
-    overallComment.textContent = comment; // show overall comment
+      wrapper.appendChild(radio);
+      wrapper.appendChild(label);
+      optionsContainer.appendChild(wrapper);
+    });
 
-    tipsContainer.innerHTML = ''; // clear any old tips
+    feedbackElement.textContent = '';
+    feedbackElement.className = '';
 
-    const topics = Object.keys(quizState.wrongTipsByTopic); // get list of topics where mistakes happened
+    clearSubmitError();
 
-    if (topics.length === 0) { // if there were no wrong answers
-      const allGoodPara = document.createElement('p'); // create a paragraph
-      allGoodPara.textContent = 'You did not miss any questions, which means your answers were consistent across the phishing topic.'; // simple all-correct message
-      tipsContainer.appendChild(allGoodPara); // add to tips container
-    } else { // there were some mistakes
-      topics.forEach(function (topicKey) { // go through each topic
-        const topicBlock = document.createElement('div'); // create a block for this topic
-        topicBlock.className = 'topic-tips'; // apply tips style
+    submitButton.disabled = false;
+    nextButton.disabled = true;
 
-        const title = document.createElement('h5'); // small heading
-        title.textContent = 'Tips for ' + topicKey; // include topic name
+    if (quizState.currentIndex === quizState.questions.length - 1) {
+      nextButton.textContent = 'See results';
+    } else {
+      nextButton.textContent = 'Next question';
+    }
+  }
 
-        const list = document.createElement('ul'); // list for tips
-        quizState.wrongTipsByTopic[topicKey].forEach(function (tipText) { // loop over tips for this topic
-          const li = document.createElement('li'); // create list item
-          li.textContent = tipText; // put tip text inside
-          list.appendChild(li); // add to list
-        }); // end tips loop
+  function getSelectedOptionIndex() {
+    const radios = document.querySelectorAll('input[name="quiz-options"]');
+    for (let i = 0; i < radios.length; i += 1) {
+      if (radios[i].checked) {
+        return parseInt(radios[i].value, 10);
+      }
+    }
+    return null;
+  }
 
-        topicBlock.appendChild(title); // add heading to block
-        topicBlock.appendChild(list); // add list under heading
-        tipsContainer.appendChild(topicBlock); // add block to tips container
-      }); // end topics loop
-    } // end topics length check
+  function renderFeedback(feedbackElement, isCorrect, question) {
+    const baseMessage = isCorrect ? 'Correct! ' : 'Not quite right. ';
+    feedbackElement.textContent = baseMessage + question.explanation;
 
-    resultsSection.hidden = false; // show results section
-    document.getElementById('quiz-form').hidden = true; // hide the quiz form now
-    submitButton.disabled = true; // disable submit button
-    nextButton.disabled = true; // disable next button
-  } // end finishQuiz
-}); // end dom ready handler for quiz setup
+    if (isCorrect) {
+      feedbackElement.className = 'quiz-feedback-correct';
+    } else {
+      feedbackElement.className = 'quiz-feedback-incorrect';
+    }
+  }
 
+  function finishQuiz(quizState, scoreLine, overallComment, tipsContainer, resultsSection, submitButton, nextButton) {
+    const totals = quizState.scoresByTopic;
+    let totalCorrect = 0;
+    let totalQuestions = 0;
+    TOPIC_ORDER.forEach(function (topic) {
+      if (totals[topic]) {
+        totalCorrect += totals[topic].correct;
+        totalQuestions += totals[topic].total;
+      }
+    });
+
+    const overallPct = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+
+    if (resultsHeadline) {
+      if (overallPct >= MASTERY_THRESHOLD_PCT) {
+        resultsHeadline.textContent = '🏆 Outstanding! You are a cybersecurity expert.';
+        resultsHeadline.className = 'quiz-results-headline quiz-results-headline--success';
+      } else {
+        resultsHeadline.textContent = '📚 Good effort! But there are a few things we need to review.';
+        resultsHeadline.className = 'quiz-results-headline quiz-results-headline--review';
+      }
+    }
+
+    scoreLine.textContent =
+      'You answered ' + totalCorrect + ' of ' + totalQuestions + ' correctly (' + overallPct + '%).';
+
+    if (topicBreakdownList) {
+      topicBreakdownList.innerHTML = '';
+      TOPIC_ORDER.forEach(function (topic) {
+        const s = totals[topic];
+        if (!s || s.total === 0) return;
+        const pct = Math.round((s.correct / s.total) * 100);
+        const li = document.createElement('li');
+        li.textContent = topic + ': ' + s.correct + '/' + s.total + ' (' + pct + '%)';
+        topicBreakdownList.appendChild(li);
+      });
+    }
+
+    if (masteryBanner) {
+      if (overallPct >= MASTERY_THRESHOLD_PCT) {
+        masteryBanner.hidden = false;
+        masteryBanner.className = 'quiz-mastery-banner quiz-mastery-banner--success';
+      } else {
+        masteryBanner.hidden = true;
+        masteryBanner.className = 'quiz-mastery-banner';
+      }
+    }
+
+    if (overallPct >= MASTERY_THRESHOLD_PCT) {
+      if (reviseContainer) reviseContainer.hidden = true;
+      overallComment.textContent =
+        'Mastery achieved. You scored at or above the ' + MASTERY_THRESHOLD_PCT + '% threshold. Keep practising these habits in real life.';
+    } else {
+      const weakest = findWeakestTopic(totals);
+      const lessonHref = TOPIC_TO_LESSON[weakest] || 'lessons.html';
+      if (reviseMessage) {
+        reviseMessage.textContent =
+          'You need to brush up on ' + weakest + ' before you reach mastery. Review the lesson below, then try the quiz again.';
+      }
+      if (reviseLink) {
+        reviseLink.href = lessonHref;
+        reviseLink.textContent = 'Review: ' + weakest;
+      }
+      if (reviseContainer) reviseContainer.hidden = false;
+      overallComment.textContent =
+        'You are below the ' + MASTERY_THRESHOLD_PCT + '% mastery threshold. Focus on your weakest topic and retake the quiz when ready.';
+    }
+
+    tipsContainer.innerHTML = '';
+
+    const wrongTopics = Object.keys(quizState.wrongTipsByTopic);
+
+    if (wrongTopics.length === 0) {
+      const allGoodPara = document.createElement('p');
+      allGoodPara.textContent =
+        'You did not miss any questions. Strong work across every topic in this quiz.';
+      tipsContainer.appendChild(allGoodPara);
+    } else {
+      wrongTopics.forEach(function (topicKey) {
+        const topicBlock = document.createElement('div');
+        topicBlock.className = 'topic-tips';
+
+        const title = document.createElement('h5');
+        title.textContent = 'Tips for ' + topicKey;
+
+        const list = document.createElement('ul');
+        quizState.wrongTipsByTopic[topicKey].forEach(function (tipText) {
+          const li = document.createElement('li');
+          li.textContent = tipText;
+          list.appendChild(li);
+        });
+
+        topicBlock.appendChild(title);
+        topicBlock.appendChild(list);
+        tipsContainer.appendChild(topicBlock);
+      });
+    }
+
+    resultsSection.hidden = false;
+    document.getElementById('quiz-form').hidden = true;
+    clearSubmitError();
+    submitButton.disabled = true;
+    nextButton.disabled = true;
+  }
+});

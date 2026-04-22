@@ -7,9 +7,22 @@
   <link rel="stylesheet" href="style.css"> <!-- main css for the site -->
 </head> <!-- end of head -->
 <body> <!-- visible page content -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
   <header class="site-header"> <!-- top bar with title and nav -->
-    <h1 class="site-title">CyberSafeLearn</h1> <!-- main site heading -->
+    <div class="site-brand">
+      <svg class="site-logo" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="csl-shield-grad" x1="6" y1="4" x2="26" y2="28" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#4f46e5"/>
+            <stop offset="1" stop-color="#58cc02"/>
+          </linearGradient>
+        </defs>
+        <path fill="url(#csl-shield-grad)" d="M16 3 5 7.5v6.2c0 5.2 2.9 9.9 11 14.3 8.1-4.4 11-9.1 11-14.3V7.5L16 3Z"/>
+        <path fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M11 16.5 14.5 20 22 12.5"/>
+      </svg>
+      <h1 class="site-title">CyberSafeLearn</h1>
+    </div>
     <p class="site-tagline">Short lessons and quizzes about staying safe online for students.</p> <!-- quick summary text -->
 
     <nav aria-label="Main navigation"> <!-- main nav for the site -->
@@ -30,13 +43,13 @@
     </nav> <!-- end nav -->
   </header> <!-- end header -->
 
-  <main class="page-main"> <!-- main content for this page -->
+  <main id="main-content" class="page-main" tabindex="-1"> <!-- main content for this page -->
 
-    <section class="card" aria-labelledby="home-intro-heading"> <!-- intro card -->
+    <section class="card card--premium-intro" aria-labelledby="home-intro-heading"> <!-- intro card -->
       <h2 id="home-intro-heading">Welcome to CyberSafeLearn</h2> <!-- intro heading -->
-      <p>CyberSafeLearn is a small information security awareness site designed for university students.</p> <!-- short project description -->
-      <p>Everything runs in your browser, and the system never asks for names, emails, or any personal details.</p> <!-- remind that it is anonymous -->
-      <p>The idea is to learn from short lessons, try a quick quiz, and then leave optional anonymous feedback.</p> <!-- simple flow of the site -->
+      <p>CyberSafeLearn helps you build everyday online safety skills in a few focused sessions.</p>
+      <p>Your privacy matters: we never ask for your name, email, or student number.</p>
+      <p>Work through bite-sized lessons, check your understanding with the quiz, and share anonymous feedback if you like.</p>
     </section> <!-- end intro card -->
 
     <section class="card" aria-labelledby="home-lessons-heading"> <!-- lessons card -->
@@ -49,21 +62,20 @@
     <section class="card" aria-labelledby="home-quiz-heading"> <!-- quiz card -->
       <h2 id="home-quiz-heading">Test yourself with a quiz</h2> <!-- quiz heading -->
       <p>The quiz shows one multiple choice question at a time and gives instant feedback on each answer.</p> <!-- explain quiz flow -->
-      <p>At the end you get a score out of ten plus tips on which topics to review.</p> <!-- explain final result -->
+      <p>At the end you see how you did and get tips on anything you missed.</p>
       <a href="quiz.html" class="primary-button">Start quiz</a> <!-- button to quiz page -->
     </section> <!-- end quiz card -->
 
     <section class="card" aria-labelledby="home-feedback-heading">
       <h2 id="home-feedback-heading">Leave anonymous feedback</h2>
-      <p>You can send anonymous feedback about the lessons or quiz. No names or emails are collected.</p>
-      <p>Feedback is sent to a small backend server (see RUN_GUIDE.md to start it).</p>
+      <p>Tell us what helped and what could be clearer — anonymously. No sign-up required.</p>
       <a href="feedback.html" class="secondary-button">Open feedback form</a>
     </section>
 
   </main> <!-- end main content -->
 
   <footer class="site-footer"> <!-- footer text -->
-    <p>CyberSafeLearn &mdash; BSc Computer Science final year project demo.</p> <!-- short footer note -->
+    <p>CyberSafeLearn &mdash; Stay safer online.</p>
   </footer> <!-- end footer -->
 
   <script src="script.js"></script> <!-- shared js file -->

@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
   <header class="site-header">
     <h1 class="site-title">CyberSafeLearn</h1>
@@ -21,25 +22,66 @@
     </nav>
   </header>
 
-  <main class="page-main">
+  <main id="main-content" class="page-main" tabindex="-1">
 
     <section id="lesson-content" class="card" data-lesson-id="privacy">
       <h2>Online privacy</h2>
-      <p>Content is loaded from <code>data/lessons.json</code>.</p>
+      <p>Intro text is loaded from <code>data/lessons.json</code>.</p>
       <div id="lesson-text-container"></div>
 
-      <section class="lesson-points" aria-labelledby="privacy-points-heading">
-        <h3 id="privacy-points-heading">Key points</h3>
-        <ul>
-          <li>Limit what you make public on social media and who can see your posts.</li>
-          <li>Only grant app permissions that match what the app actually needs.</li>
-          <li>In group chats with people you do not know well, keep personal details vague.</li>
-          <li>Assume anything you post can be copied or shared; post only what you are comfortable with.</li>
-        </ul>
-      </section>
+      <div id="privacy-interactive" aria-labelledby="privacy-interactive-heading">
+        <h3 id="privacy-interactive-heading">Spot the Overshare</h3>
+        <p class="small-text">This is a fake social post. Click each privacy risk (3 in total). Each tap adds an explanation below.</p>
+        <p id="privacy-progress" class="privacy-progress" aria-live="polite">0 of 3 cues found.</p>
 
-      <p>Test your knowledge with the privacy quiz.</p>
-      <a href="quiz.html?topic=privacy" class="primary-button">Go to privacy quiz</a>
+        <div class="privacy-social-post" aria-label="Fake social media post for training">
+          <div class="privacy-post-header">
+            <span class="privacy-post-avatar" aria-hidden="true">JD</span>
+            <div class="privacy-post-meta">
+              <strong class="privacy-post-username">jamie.devon</strong>
+              <p class="privacy-post-time">2h ago</p>
+            </div>
+          </div>
+          <p class="privacy-geo-row">
+            <span class="privacy-cue privacy-geo-tag" data-cue-id="location" tabindex="0" role="button">📍 Oak Street, Manchester · Home</span>
+          </p>
+
+          <div class="privacy-post-body">
+            <p class="privacy-post-caption">Concert tonight — so hyped! 🎵 Got my ticket 🎟️</p>
+            <div class="privacy-post-scene" aria-hidden="true">
+              <div class="privacy-scene-sky"></div>
+              <div class="privacy-scene-facade">
+                <span class="privacy-cue privacy-scene-address" data-cue-id="address" tabindex="0" role="button">142</span>
+                <span class="privacy-scene-street">OAK ST</span>
+              </div>
+              <div class="privacy-scene-figure">🧑‍🎓</div>
+              <div class="privacy-ticket-card">
+                <span class="privacy-ticket-venue">ARENA LIVE — GENERAL ENTRY</span>
+                <span class="privacy-cue privacy-ticket-barcode" data-cue-id="barcode" tabindex="0" role="button" title="Ticket barcode">▮ ▮ ▯ ▮ ▯ ▮ ▮ ▯ ▮</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="privacy-post-footer">
+            <span>♡ 124</span>
+            <span>💬 18</span>
+            <span>Share</span>
+          </div>
+        </div>
+
+        <div id="privacy-feedback-area">
+          <h4>What you spotted</h4>
+          <ul id="privacy-feedback-list" class="privacy-feedback-list"></ul>
+          <div id="privacy-summary-block" class="privacy-summary-block" hidden>
+            <p id="privacy-summary-text" class="privacy-summary-text"></p>
+            <p class="small-text">Ready to check what you learned?</p>
+            <a href="quiz.html?topic=privacy" class="primary-button">Take the privacy quiz</a>
+          </div>
+        </div>
+      </div>
+
+      <p>Or jump straight to the full quiz any time.</p>
+      <a href="quiz.html?topic=privacy" class="secondary-button">Go to privacy quiz</a>
     </section>
 
   </main>
@@ -50,5 +92,6 @@
 
   <script src="script.js"></script>
   <script src="lessons.js"></script>
+  <script src="privacyLesson.js"></script>
 </body>
 </html>

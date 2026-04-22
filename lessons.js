@@ -31,6 +31,31 @@ document.addEventListener('DOMContentLoaded', function () { // wait until dom is
     }); // end then
 }); // end dom content loaded
 
+const LESSON_CARD_EMOJI = {
+  phishing: '🎣',
+  passwords: '🔐',
+  privacy: '👁️‍🗨️'
+};
+
+const LESSON_CARD_IMAGE = {
+  phishing: {
+    src: 'https://images.unsplash.com/photo-1596526131083-e8c633e9e2c8?auto=format&fit=crop&w=800&q=80',
+    alt: 'Laptop screen with email — practice spotting phishing and suspicious messages.'
+  },
+  passwords: {
+    src: 'https://images.unsplash.com/photo-1633265486064-086b219458ec?auto=format&fit=crop&w=800&q=80',
+    alt: 'Digital padlock and security concept — strong passwords and account protection.'
+  },
+  privacy: {
+    src: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80',
+    alt: 'Smartphone and online activity — thinking about what to share in public.'
+  },
+  _default: {
+    src: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80',
+    alt: 'Cybersecurity and technology — stay safer online.'
+  }
+};
+
 // turn each lesson entry into a card on the lessons page
 function renderLessonCards(container, lessonsData) { // container is where cards go, lessonsData is the array from json
   container.innerHTML = ''; // clear anything that was inside before
@@ -39,37 +64,79 @@ function renderLessonCards(container, lessonsData) { // container is where cards
     const card = document.createElement('article'); // create a card element
     card.className = 'lesson-card'; // use lesson card styles
 
+    const imageMeta = LESSON_CARD_IMAGE[lesson.id] || LESSON_CARD_IMAGE._default;
+
+    const figure = document.createElement('figure');
+    figure.className = 'lesson-card-media';
+
+    const img = document.createElement('img');
+    img.className = 'lesson-card-image';
+    img.src = imageMeta.src;
+    img.alt = imageMeta.alt;
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    img.width = 800;
+    img.height = 520;
+
+    figure.appendChild(img);
+
+    const body = document.createElement('div');
+    body.className = 'lesson-card-body';
+
+    const titleRow = document.createElement('div');
+    titleRow.className = 'lesson-card-title-row';
+
+    const emojiSpan = document.createElement('span');
+    emojiSpan.className = 'lesson-card-emoji';
+    emojiSpan.setAttribute('aria-hidden', 'true');
+    emojiSpan.textContent = LESSON_CARD_EMOJI[lesson.id] || '📘';
+
     const title = document.createElement('h3'); // create title element
     title.textContent = lesson.title; // fill with title from json
 
+    titleRow.appendChild(emojiSpan);
+    titleRow.appendChild(title);
+
     const topicPara = document.createElement('p'); // create topic text
-    topicPara.textContent = 'Topic: ' + lesson.topic; // show topic name
+    topicPara.className = 'lesson-card-topic';
+    topicPara.textContent = lesson.topic;
 
     const summaryPara = document.createElement('p'); // create summary text
+    summaryPara.className = 'lesson-card-summary';
     summaryPara.textContent = lesson.text; // show short lesson text
 
+    body.appendChild(titleRow);
+    body.appendChild(topicPara);
+    body.appendChild(summaryPara);
+
     const button = document.createElement('a'); // create button link
-    button.className = 'secondary-button'; // style as secondary button
+    const ctaMod = lesson.id && ['phishing', 'passwords', 'privacy'].indexOf(lesson.id) !== -1
+      ? lesson.id
+      : 'default';
+    button.className = 'lesson-card-cta lesson-card-cta--' + ctaMod;
     button.setAttribute('role', 'button'); // hint to screen readers that this behaves like a button
     button.href = '#'; // default link for lessons without full pages yet
 
     if (lesson.id === 'phishing') {
       button.href = 'lesson_phishing.html';
-      button.textContent = 'Open phishing lesson';
+      button.textContent = 'Start phishing lesson →';
     } else if (lesson.id === 'passwords') {
       button.href = 'lesson_passwords.html';
-      button.textContent = 'Open password lesson';
+      button.textContent = 'Start password lesson →';
     } else if (lesson.id === 'privacy') {
       button.href = 'lesson_privacy.html';
-      button.textContent = 'Open privacy lesson';
+      button.textContent = 'Start privacy lesson →';
     } else {
-      button.textContent = 'Open lesson';
+      button.textContent = 'Open lesson →';
     }
 
-    card.appendChild(title); // add title to card
-    card.appendChild(topicPara); // add topic line
-    card.appendChild(summaryPara); // add summary text
-    card.appendChild(button); // add button
+    const foot = document.createElement('div');
+    foot.className = 'lesson-card-footer';
+    foot.appendChild(button);
+
+    card.appendChild(figure);
+    card.appendChild(body);
+    card.appendChild(foot);
 
     container.appendChild(card); // put card into container
   }); // end forEach

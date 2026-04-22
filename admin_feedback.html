@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
   <header class="site-header">
     <h1 class="site-title">CyberSafeLearn</h1>
@@ -21,7 +22,7 @@
     </nav>
   </header>
 
-  <main class="page-main">
+  <main id="main-content" class="page-main" tabindex="-1">
 
     <section class="card" aria-labelledby="admin-heading">
       <h2 id="admin-heading">Stored feedback</h2>
@@ -57,9 +58,11 @@
           }
           var table = document.createElement('table');
           table.className = 'admin-table';
-          table.setAttribute('aria-label', 'Feedback entries');
+          var caption = document.createElement('caption');
+          caption.textContent = 'Stored anonymous feedback submissions';
+          table.appendChild(caption);
           var thead = document.createElement('thead');
-          thead.innerHTML = '<tr><th>Time</th><th>Rating</th><th>Feedback</th></tr>';
+          thead.innerHTML = '<tr><th scope="col">Time</th><th scope="col">Rating</th><th scope="col">Feedback</th></tr>';
           table.appendChild(thead);
           var tbody = document.createElement('tbody');
           data.forEach(function (entry) {

@@ -5,6 +5,12 @@ const path = require('path'); // build safe paths
 
 const dataPath = path.join(__dirname, '..', 'data', 'feedback.json'); // path to json file
 
+/** Strip HTML tags from feedback text before storage (basic XSS mitigation for admin display). */
+function sanitizeFeedbackText(raw) {
+  if (typeof raw !== 'string') return '';
+  return raw.replace(/<[^>]*>/g, '').trim();
+}
+
 function readFeedbackFile() { // read feedback.json as array
   try { // try to read file
     const raw = fs.readFileSync(dataPath, 'utf8'); // read file contents
@@ -20,7 +26,7 @@ function writeFeedbackFile(list) { // write array back to feedback.json
 } // end writeFeedbackFile
 
 function validateFeedback(payload) { // basic server side validation
-  const text = typeof payload.text === 'string' ? payload.text.trim() : ''; // normalise text
+  const text = typeof payload.text === 'string' ? payload.text.trim() : ''; // normalise text (already sanitized when passed in)
   const rating = payload.rating; // rating as sent from client
 
   if (!text || text.length < 1) return 'Feedback text cannot be empty.';
@@ -43,7 +49,10 @@ exports.getFeedback = function (req, res) { // handle GET /api/feedback
 }; // end getFeedback
 
 exports.createFeedback = function (req, res) { // handle POST /api/feedback
-  const validationError = validateFeedback(req.body); // run validation
+  const rawText = typeof req.body.text === 'string' ? req.body.text.trim() : '';
+  const safeText = sanitizeFeedbackText(rawText);
+
+  const validationError = validateFeedback({ ...req.body, text: safeText }); // run validation on sanitized text
   if (validationError) { // if invalid
     return res.status(400).json({ error: validationError }); // send 400 with error message
   } // end validation check
@@ -52,7 +61,7 @@ exports.createFeedback = function (req, res) { // handle POST /api/feedback
 
   const newEntry = { // build new stored entry
     id: Date.now(), // simple numeric id based on time
-    text: req.body.text.trim(), // feedback text
+    text: safeText, // feedback text (HTML stripped)
     rating: req.body.rating || '', // rating or empty string
     timestamp: new Date().toISOString() // server timestamp
   }; // end newEntry
@@ -62,4 +71,3 @@ exports.createFeedback = function (req, res) { // handle POST /api/feedback
 
   res.status(201).json({ message: 'Feedback stored', id: newEntry.id }); // send success response
 }; // end createFeedback
-

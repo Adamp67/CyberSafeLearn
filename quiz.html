@@ -7,9 +7,22 @@
   <link rel="stylesheet" href="style.css"> <!-- main css file -->
 </head> <!-- end head -->
 <body> <!-- quiz body -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
   <header class="site-header"> <!-- top bar -->
-    <h1 class="site-title">CyberSafeLearn</h1> <!-- site title -->
+    <div class="site-brand">
+      <svg class="site-logo" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="csl-shield-grad" x1="6" y1="4" x2="26" y2="28" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#4f46e5"/>
+            <stop offset="1" stop-color="#58cc02"/>
+          </linearGradient>
+        </defs>
+        <path fill="url(#csl-shield-grad)" d="M16 3 5 7.5v6.2c0 5.2 2.9 9.9 11 14.3 8.1-4.4 11-9.1 11-14.3V7.5L16 3Z"/>
+        <path fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M11 16.5 14.5 20 22 12.5"/>
+      </svg>
+      <h1 class="site-title">CyberSafeLearn</h1>
+    </div>
     <p class="site-tagline">Interactive quiz with instant feedback.</p> <!-- short quiz description -->
 
     <nav aria-label="Main navigation"> <!-- main nav -->
@@ -30,7 +43,7 @@
     </nav> <!-- end nav -->
   </header> <!-- end header -->
 
-  <main class="page-main"> <!-- main quiz area -->
+  <main id="main-content" class="page-main" tabindex="-1"> <!-- main quiz area -->
 
     <section class="card" aria-labelledby="quiz-heading"> <!-- card that holds quiz -->
       <h2 id="quiz-heading">Quiz</h2>
@@ -53,6 +66,8 @@
         <!-- "Correct" or "Not quite right" text goes here --> <!-- placeholder -->
       </div> <!-- end feedback -->
 
+      <p id="quiz-submit-error" class="quiz-submit-error" role="alert" aria-live="assertive" hidden></p>
+
       <div class="quiz-buttons"> <!-- buttons for submit and next -->
         <button type="button" id="submit-answer-button" class="primary-button">Submit answer</button> <!-- send current answer -->
         <button type="button" id="next-question-button" class="secondary-button" disabled>Next question</button> <!-- go to next question -->
@@ -60,8 +75,27 @@
 
       <section id="quiz-results" aria-labelledby="quiz-results-heading" hidden> <!-- final results, hidden until end -->
         <h3 id="quiz-results-heading">Your results</h3> <!-- results heading -->
-        <p id="quiz-score-line">You scored 0 out of 10.</p> <!-- line that shows final score -->
-        <p id="quiz-overall-comment">Once you finish the quiz, a short comment about your performance will appear here.</p> <!-- simple text about how it went -->
+
+        <p id="quiz-results-headline" class="quiz-results-headline" aria-live="polite"></p>
+
+        <div id="quiz-mastery-banner" class="quiz-mastery-banner quiz-mastery-banner--success" role="status" aria-live="polite" hidden>
+          <strong class="quiz-mastery-title">Mastery achieved</strong>
+          <p class="quiz-mastery-sub">You scored at or above the 80% threshold across this quiz.</p>
+        </div>
+
+        <p id="quiz-score-line">Your score will appear here when you finish.</p>
+        <p id="quiz-overall-comment">Once you finish the quiz, a short summary will appear here.</p>
+
+        <section class="quiz-topic-breakdown" aria-labelledby="quiz-topic-breakdown-heading">
+          <h4 id="quiz-topic-breakdown-heading">Score by topic</h4>
+          <ul id="quiz-topic-breakdown-list"></ul>
+        </section>
+
+        <div id="quiz-revise-container" class="quiz-revise-container" hidden>
+          <p id="quiz-revise-message"></p>
+          <a id="quiz-revise-link" class="primary-button" href="lessons.html">Review lesson</a>
+        </div>
+
         <section aria-labelledby="quiz-tips-heading"> <!-- section for topic tips -->
           <h4 id="quiz-tips-heading">Improvement tips by topic</h4> <!-- heading for tips -->
           <div id="quiz-tips-container"> <!-- js adds per-topic tips here -->
@@ -76,7 +110,7 @@
   </main> <!-- end main -->
 
   <footer class="site-footer"> <!-- footer -->
-    <p>CyberSafeLearn &mdash; Quiz demo with JSON-driven questions.</p> <!-- simple footer text -->
+    <p>CyberSafeLearn &mdash; Test yourself, level up your safety habits.</p>
   </footer> <!-- end footer -->
 
   <script src="script.js"></script> <!-- shared helper js -->

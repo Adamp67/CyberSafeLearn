@@ -7,9 +7,22 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
   <header class="site-header">
-    <h1 class="site-title">CyberSafeLearn</h1>
+    <div class="site-brand">
+      <svg class="site-logo" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="csl-shield-grad" x1="6" y1="4" x2="26" y2="28" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#4f46e5"/>
+            <stop offset="1" stop-color="#58cc02"/>
+          </linearGradient>
+        </defs>
+        <path fill="url(#csl-shield-grad)" d="M16 3 5 7.5v6.2c0 5.2 2.9 9.9 11 14.3 8.1-4.4 11-9.1 11-14.3V7.5L16 3Z"/>
+        <path fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M11 16.5 14.5 20 22 12.5"/>
+      </svg>
+      <h1 class="site-title">CyberSafeLearn</h1>
+    </div>
     <p class="site-tagline">Anonymous feedback about the lessons and quiz.</p>
     <nav aria-label="Main navigation">
       <ul class="nav-list">
@@ -21,7 +34,7 @@
     </nav>
   </header>
 
-  <main class="page-main">
+  <main id="main-content" class="page-main" tabindex="-1">
 
     <section class="card" aria-labelledby="feedback-heading">
       <h2 id="feedback-heading">Anonymous feedback form</h2>
@@ -43,7 +56,7 @@
             <option value="5">5 - Very helpful</option>
           </select>
         </div>
-        <p class="small-text">Feedback is sent to the backend server.</p>
+        <p class="small-text">Your feedback is 100% anonymous and helps us improve the platform.</p>
         <button type="submit" id="feedback-submit-btn" class="primary-button">Submit feedback</button>
       </form>
 
@@ -53,7 +66,7 @@
   </main>
 
   <footer class="site-footer">
-    <p>CyberSafeLearn &mdash; Feedback stored on the backend.</p>
+    <p>Your feedback is 100% anonymous and helps us improve the platform.</p>
   </footer>
 
   <script src="script.js"></script>
@@ -101,7 +114,7 @@
             }
           })
           .catch(function () {
-            showMessage('Backend is not running or unreachable. Please try again later.', true);
+            showMessage('We could not reach the server. Check your connection and try again.', true);
           })
           .finally(function () {
             submitBtn.disabled = false;
